@@ -69,22 +69,56 @@ appointment.findAll = (req, res) => {
   };
 
   
-// Retrieve all Tutorials from the database.
-// appointment.findAll = (req, res) => {
-//     const title = req.query.title;
-//     var condition = title ? { title: { $regex: new RegExp(title), $options: "i" } } : {};
+// Update a Appointment by the id in the request
+appointment.update = (req, res) => {
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Data to update can not be empty!"
+    });
+  }
+
+  const id = req.params.id;
+
+  Appointments.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot update Appointment with id=${id}. Maybe Appointment was not found!`
+        });
+      } else res.send({ message: "Appointment was updated successfully." });
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Error updating Appointment with id=" + id
+      });
+    });
+};
+
+
+
+// Delete a Appointment with the specified id in the request
+appointment.delete = (req, res) => {
+  const id = req.params.id;
+
+  Appointments.findByIdAndRemove(id, { useFindAndModify: false })
+    .then(data => {
+      if (!data) {
+        res.status(404).send({
+          message: `Cannot delete Appointment with id=${id}. Maybe Appointment was not found!`
+        });
+      } else {
+        res.send({
+          message: "Appointment was deleted successfully!"
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: "Could not delete Appointment with id=" + id
+      });
+    });
+};
   
-//     Appointments.find(condition)
-//       .then(data => {
-//         res.send(data);
-//       })
-//       .catch(err => {
-//         res.status(500).send({
-//           message:
-//             err.message || "Some error occurred while retrieving tutorials."
-//         });
-//       });
-//   };
 
   
 module.exports = appointment;

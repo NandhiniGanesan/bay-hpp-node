@@ -33,6 +33,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/appointment.routes")(app);
 require("./app/routes/doctor.routes")(app);
+require("./app/routes/authRoutes")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
